@@ -49,11 +49,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <err.h>
 #include <errno.h>
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 int	opterr = 1;		/* if error message should be printed */
 int	optind = 1;		/* index into parent argv vector */
@@ -101,6 +102,30 @@ static const char ambig[] = "ambiguous option -- %.*s";
 static const char noarg[] = "option doesn't take an argument -- %.*s";
 static const char illoptchar[] = "unknown option -- %c";
 static const char illoptstring[] = "unknown option -- %s";
+
+#ifndef __CYGWIN__
+#define __progname __argv[0]
+#else
+extern char __declspec(dllimport) *__progname;
+#endif
+
+static void
+_vwarnx(const char *fmt, va_list ap)
+{
+    (void)fprintf(stderr, "%s: ", __progname);
+    if (fmt != NULL)
+        (void)vfprintf(stderr, fmt, ap);
+    (void)fprintf(stderr, "\n");
+}
+
+static void
+warnx(const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    _vwarnx(fmt, ap);
+    va_end(ap);
+}
 
 /*
  * Compute the greatest common divisor of a and b.

@@ -33,7 +33,7 @@
 #ifndef _GETOPT_H_
 #define _GETOPT_H_
 
-#include <sys/cdefs.h>
+#include <crtdefs.h>
 
 /*
  * GNU-like getopt_long()
@@ -56,11 +56,14 @@ struct option {
 	int val;
 };
 
-__BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int	 getopt_long(int, char * const *, const char *,
-	    const struct option *, int *);
+                 const struct option *, int *);
 int	 getopt_long_only(int, char * const *, const char *,
-	    const struct option *, int *);
+                      const struct option *, int *);
 #ifndef _GETOPT_DEFINED_
 #define _GETOPT_DEFINED_
 int	 getopt(int, char * const *, const char *);
@@ -71,6 +74,9 @@ extern   int optind;
 extern   int optopt;
 extern   int optreset;
 #endif
-__END_DECLS
- 
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* !_GETOPT_H_ */
